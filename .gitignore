@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*$py.class
+*.so
+*.egg
+*.egg-info
+pip-log.txt
+pip-delete-this-directory.txt
+throttle.log
+
+# Jupyter Notebook
+.notebookcheck.py
+*.notebookcheck.py
+
+# Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific
+.DS_Store
+Thumbs.db
+*.DS_Store
+*.thumb
+
+# Logs
+*.log
+
+# Recursively ignore directories
+*/__pycache__/
+*/.pytest_cache/
+*/.mypy_cache/
+*/.eggs/
+*/.venv/
+*/.tox/
+*/.coverage/
+*/.mypy/
+*/.pytest/
+*/.cache/
+*/.sass-cache/
+*/.npm/
+*/node_modules/
+*/.yarn/
+*/.yarn.lock
+*/.jupyter/
+*/.ipython/
+*/.vscode/
+*/.idea/
+*/.gitattributes
+*/.gitignore
+*/.hg/
+*/.hgignore
+*/.hg_archival.txt
+*/.hgtags
+*/.hgsubstate
