@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+
 
 class SearchProblem:
     """
@@ -68,9 +69,11 @@ def tinyMazeSearch(problem):
     sequence of moves will be incorrect, so only use this for tinyMaze.
     """
     from game import Directions
+
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -87,17 +90,94 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+
+    closed = set()
+    fringe = util.Stack()
+    start_state = problem.getStartState()
+    fringe.push((start_state, []))
+    print("Start:", problem.getStartState())
+
+    while not fringe.isEmpty():
+        # print("fringe content: ", fringe)  # returms obj .. not implemented
+        curr_state, path = fringe.pop()
+        closed.add(curr_state)
+        print(f"\ncurrent={curr_state}-> ", end="")
+        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+        if problem.isGoalState(curr_state):
+            print(f"\n\npath:{path}")
+            return path
+
+        for succ, direction, _ in problem.getSuccessors(curr_state):
+            print(succ, end="")
+            if succ not in closed:
+                new_path = path + [direction]
+                fringe.push((succ, new_path))
+
     util.raiseNotDefined()
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+
+    closed = set()
+    fringe = util.Queue()
+    start_state = problem.getStartState()
+    fringe.push((start_state, []))
+    print("Start:", problem.getStartState())
+
+    while not fringe.isEmpty():
+        curr_state, path = fringe.pop()
+        closed.add(curr_state)
+        print(f"\ncurrent={curr_state}-> ", end="")
+        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+        if problem.isGoalState(curr_state):
+            print(f"\n\npath:{path}")
+            return path
+
+        # if curr_state not in closed:
+        #     print("current is visited")
+        for succ, direction, _ in problem.getSuccessors(curr_state):
+            print(succ, end="")
+            if succ not in closed:
+                new_path = path + [direction]
+                fringe.push((succ, new_path))
+
     util.raiseNotDefined()
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
+    fringe = util.PriorityQueue()
+    visited = dict()
+
+    start_st = problem.getStartState()
+    fringe.push((start_st, [], 0), 0)
+
+    while len(fringe.heap) != 0:
+        state, path, cost = fringe.pop()
+        visited[state] = cost
+        print(f"\ncurrent={state}-> ", end="")
+        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+        if problem.isGoalState(state):
+            print("path:", path)
+            return path
+
+        for succ, direction, step_cost in problem.getSuccessors(state):
+            total = cost + step_cost
+            if succ not in visited or total < visited[succ]:
+                fringe.push((succ, path + [direction], total), total)
+
     util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -105,6 +185,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
