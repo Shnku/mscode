@@ -9,9 +9,31 @@ dependencies = [
     "marimo>=0.14.17",
     "matplotlib>=3.10.5",
     "numpy>=2.3.2",
+    "pydentic>=0.0.1.dev3",
     "pytest>=8.4.1",
     "python-lsp-server>=1.12.2",
     "ruff>=0.12.8",
     "scikit-learn>=1.7.1",
     "spyder>=6.0.7",
 ]
+
+# Language server configuration
+#[tool.marimo.language_servers.pylsp]
+#enabled = false               # Enable/disable the Python language server
+#enable_mypy = true           # Type checking with mypy (enabled by default, if installed)
+#enable_ruff = true           # Linting with ruff (enabled by default, if installed)
+#enable_flake8 = false        # Linting with flake8
+#enable_pydocstyle = false    # Check docstring style
+#enable_pylint = false        # Linting with pylint
+#enable_pyflakes = false      # Syntax checking with pyflakes
+
+# Diagnostics configuration
+[tool.marimo.diagnostics]
+enabled = false       
+
+# Diagnostics configuration
+[tool.marimo.basedpyright]
+enabled = true
+reportMissingImports = "error"
+reportMissingTypeStubs = false
+typeCheckingMode = "standard"
