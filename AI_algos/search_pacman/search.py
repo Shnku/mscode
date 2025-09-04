@@ -18,6 +18,8 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from game import Directions
+from typing import List
 
 
 class SearchProblem:
@@ -63,19 +65,17 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-def tinyMazeSearch(problem):
+def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
     sequence of moves will be incorrect, so only use this for tinyMaze.
     """
-    from game import Directions
-
     s = Directions.SOUTH
     w = Directions.WEST
     return [s, s, w, s, w, w, s, w]
 
 
-def depthFirstSearch(problem):
+def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """
     Search the deepest nodes in the search tree first.
 
@@ -118,7 +118,7 @@ def depthFirstSearch(problem):
     util.raiseNotDefined()
 
 
-def breadthFirstSearch(problem):
+def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
@@ -150,7 +150,7 @@ def breadthFirstSearch(problem):
     util.raiseNotDefined()
 
 
-def uniformCostSearch(problem):
+def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
@@ -179,7 +179,7 @@ def uniformCostSearch(problem):
     util.raiseNotDefined()
 
 
-def nullHeuristic(state, problem=None):
+def nullHeuristic(state, problem=None) -> float:
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
@@ -187,7 +187,7 @@ def nullHeuristic(state, problem=None):
     return 0
 
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directions]:
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
