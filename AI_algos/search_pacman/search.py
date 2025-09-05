@@ -19,7 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 from game import Directions
-from typing import List
+# from typing import List
 
 
 class SearchProblem:
@@ -65,7 +65,7 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
+def tinyMazeSearch(problem: SearchProblem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
     sequence of moves will be incorrect, so only use this for tinyMaze.
@@ -75,7 +75,7 @@ def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
     return [s, s, w, s, w, w, s, w]
 
 
-def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
+def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -118,7 +118,7 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     util.raiseNotDefined()
 
 
-def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
+def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
@@ -150,7 +150,7 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     util.raiseNotDefined()
 
 
-def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
+def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
@@ -160,7 +160,7 @@ def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     start_st = problem.getStartState()
     fringe.push((start_st, [], 0), 0)
 
-    while len(fringe.heap) != 0:
+    while not fringe.isEmpty():
         state, path, cost = fringe.pop()
         visited[state] = cost
         print(f"\ncurrent={state}-> ", end="")
@@ -187,9 +187,32 @@ def nullHeuristic(state, problem=None) -> float:
     return 0
 
 
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directions]:
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    fringe = util.PriorityQueue()
+    visited = dict()
+
+    start_st = problem.getStartState()
+    fringe.push(item=(start_st, [], 0), priority=heuristic(start_st, problem))
+
+    while not fringe.isEmpty():
+        state, path, current = fringe.pop()
+        visited[state] = current
+        print(f"\ncurrent={state}-> ", end="")
+        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+        if problem.isGoalState(state):
+            print("path:", path)
+            return path
+
+        for succ, direction, step_cost in problem.getSuccessors(state):
+            g_cost = current + step_cost
+            if succ not in visited or g_cost < visited[succ]:
+                f_cost = g_cost + heuristic(succ, problem)
+                fringe.push(item=(succ, path + [direction], g_cost), priority=f_cost)
+
     util.raiseNotDefined()
 
 
