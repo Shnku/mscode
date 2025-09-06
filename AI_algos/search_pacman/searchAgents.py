@@ -244,11 +244,11 @@ class PositionSearchProblem(search.SearchProblem):
                 successors.append((nextState, action, cost))
 
         # Bookkeeping for display purposes
-        self._expanded += 1  # DO NOT CHANGE
         if state not in self._visited:
             self._visited[state] = True
             self._visitedlist.append(state)
 
+        self._expanded += 1  # DO NOT CHANGE
         return successors
 
     def getCostOfActions(self, actions):
@@ -393,13 +393,13 @@ class CornersProblem(search.SearchProblem):
 
             *** YOUR CODE HERE ***
             """
-
-            next_visited = list(visited)
             if not hitsWall:
-                currentPosition = self.corners.index((nextx, nexty))
-                next_visited[currentPosition] = True
-            succ_state = ((nextx, nexty), tuple(next_visited))
-            successors.append((succ_state, action, 1))
+                next_visited = list(visited)
+                if (nextx, nexty) in self.corners:
+                    idx = self.corners.index((nextx, nexty))
+                    next_visited[idx] = True
+                succ_state = ((nextx, nexty), tuple(next_visited))
+                successors.append((succ_state, action, 1))
 
         self._expanded += 1  # DO NOT CHANGE
         return successors
@@ -435,14 +435,29 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     corners = problem.corners  # These are the corner coordinates
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
+    """ 
+        "*** YOUR CODE HERE ***"
+    Goal:
+    Write a heuristic for the CornersProblem that estimates the remaining cost to visit all unvisited corners.
 
-    "*** YOUR CODE HERE ***"
+    How to Think About It:
+    Heuristic = underestimate of remaining distance.
+
+    Simple approach: Find the farthest unvisited corner (using Manhattan distance), and return that distance.
+    This is admissible (never overestimates).
+    """
     pos, visited = state
     corners = problem.corners
-    unvisited = [corner for i, corner in enumerate(corners) if not visited[i]]
+    unvisited = []
+    for i, corner in enumerate(corners):
+        if not visited[i]:
+            unvisited.append(corner)
     if not unvisited:
         return 0
-    return max(util.manhattanDistance(pos, corner) for corner in unvisited)
+    distance_list = []
+    for corner in unvisited:
+        distance_list.append(util.manhattanDistance(pos, corner))
+    return max(distance_list)
     # return 0  # Default to trivial solution
 
 
@@ -546,14 +561,25 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
+    """
+    Goal:
+    Write a heuristic for the FoodSearchProblem (Pacman must eat all food dots).
+
+    How to Think About It:
+    State:
+    (pacmanPosition, foodGrid) (foodGrid is a grid of True/False, use .asList() to get coordinates)
+
+    Heuristic:
+    The maze distance (actual shortest path, not just Manhattan) to the furthest food dot.
+
     "*** YOUR CODE HERE ***"
+    """
     foodList = foodGrid.asList()
     if not foodList:
         return 0
 
     maxDist = 0
     for food in foodList:
-        # Caching for efficiency (optional, but recommended for large mazes)
         key = (position, food)
         if key not in problem.heuristicInfo:
             problem.heuristicInfo[key] = mazeDistance(

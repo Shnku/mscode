@@ -85,69 +85,60 @@ def depthFirstSearch(problem: SearchProblem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
 
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    # print("Start:", problem.getStartState())
+    # print("goal-state?", problem.isGoalState(problem.getStartState()))
+    # print("State's_successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
 
-    closed = set()
     fringe = util.Stack()
-    start_state = problem.getStartState()
-    fringe.push((start_state, []))
-    print("Start:", problem.getStartState())
+    closed = set()
+    fringe.push((problem.getStartState(), []))
 
     while not fringe.isEmpty():
-        # print("fringe content: ", fringe)  # returms obj .. not implemented
+        # print("closed:", closed)
         curr_state, path = fringe.pop()
-        closed.add(curr_state)
-        print(f"\ncurrent={curr_state}-> ", end="")
-        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+        # print(f"\ncurrent={curr_state}-> ", end="")
+        # print("goal-state?", problem.isGoalState(curr_state))
+        # print("State's_successors:", problem.getSuccessors(curr_state))
 
         if problem.isGoalState(curr_state):
-            print(f"\n\npath:{path}")
+            # print(f"\n\npath:{path}")
             return path
 
-        for succ, direction, _ in problem.getSuccessors(curr_state):
-            print(succ, end="")
-            if succ not in closed:
-                new_path = path + [direction]
-                fringe.push((succ, new_path))
-
-    util.raiseNotDefined()
+        if curr_state not in closed:
+            closed.add(curr_state)
+            for succ, direction, _ in problem.getSuccessors(curr_state):
+                if succ not in closed:
+                    fringe.push((succ, path + [direction]))
+    return []
 
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    closed = set()
     fringe = util.Queue()
-    start_state = problem.getStartState()
-    fringe.push((start_state, []))
-    print("Start:", problem.getStartState())
+    closed = set()
+    fringe.push((problem.getStartState(), []))
 
     while not fringe.isEmpty():
+        # print("closed:", closed)
         curr_state, path = fringe.pop()
-        closed.add(curr_state)
-        print(f"\ncurrent={curr_state}-> ", end="")
-        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+        # print(f"\ncurrent={curr_state}-> ", end="")
+        # print("goal-state?", problem.isGoalState(curr_state))
+        # print("State's_successors:", problem.getSuccessors(curr_state))
 
         if problem.isGoalState(curr_state):
-            print(f"\n\npath:{path}")
+            # print(f"\n\npath:{path}")
             return path
 
-        # if curr_state not in closed:
-        #     print("current is visited")
-        for succ, direction, _ in problem.getSuccessors(curr_state):
-            print(succ, end="")
-            if succ not in closed:
-                new_path = path + [direction]
-                fringe.push((succ, new_path))
-
-    util.raiseNotDefined()
+        if curr_state not in closed:
+            closed.add(curr_state)
+            for succ, direction, _ in problem.getSuccessors(curr_state):
+                if succ not in closed:
+                    fringe.push((succ, path + [direction]))
+    return []
 
 
 def uniformCostSearch(problem: SearchProblem):
@@ -155,28 +146,28 @@ def uniformCostSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
 
     fringe = util.PriorityQueue()
-    visited = dict()
-
-    start_st = problem.getStartState()
-    fringe.push((start_st, [], 0), 0)
+    closed = dict()
+    start = problem.getStartState()
+    fringe.push((start, [], 0), 0)
 
     while not fringe.isEmpty():
-        state, path, cost = fringe.pop()
-        visited[state] = cost
-        print(f"\ncurrent={state}-> ", end="")
-        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+        # print("closed:", closed)
+        curr_state, path, cost = fringe.pop()
+        # print(f"\ncurrent={curr_state}-> ", end="")
+        # print("goal-state?", problem.isGoalState(curr_state))
+        # print("State's_successors:", problem.getSuccessors(curr_state))
 
-        if problem.isGoalState(state):
-            print("path:", path)
+        if problem.isGoalState(curr_state):
+            # print(f"\n\npath:{path}")
             return path
 
-        for succ, direction, step_cost in problem.getSuccessors(state):
-            total = cost + step_cost
-            if succ not in visited or total < visited[succ]:
-                fringe.push((succ, path + [direction], total), total)
-
-    util.raiseNotDefined()
+        if curr_state not in closed or cost < closed[curr_state]:
+            closed[curr_state] = cost
+            for succ, direction, step_cost in problem.getSuccessors(curr_state):
+                total = cost + step_cost
+                if succ not in closed or total < closed[succ]:
+                    fringe.push((succ, path + [direction], total), total)
+    return []
 
 
 def nullHeuristic(state, problem=None) -> float:
@@ -190,30 +181,31 @@ def nullHeuristic(state, problem=None) -> float:
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    fringe = util.PriorityQueue()
-    visited = dict()
 
-    start_st = problem.getStartState()
-    fringe.push(item=(start_st, [], 0), priority=heuristic(start_st, problem))
+    fringe = util.PriorityQueue()
+    closed = dict()
+    start = problem.getStartState()
+    fringe.push((start, [], 0), heuristic(start, problem))
 
     while not fringe.isEmpty():
-        state, path, current = fringe.pop()
-        visited[state] = current
-        print(f"\ncurrent={state}-> ", end="")
-        print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-        print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+        # print("closed:", closed)
+        curr_state, path, cost = fringe.pop()
+        # print(f"\ncurrent={curr_state}-> ", end="")
+        # print("goal-state?", problem.isGoalState(curr_state))
+        # print("State's_successors:", problem.getSuccessors(curr_state))
 
-        if problem.isGoalState(state):
-            print("path:", path)
+        if problem.isGoalState(curr_state):
+            # print(f"\n\npath:{path}")
             return path
 
-        for succ, direction, step_cost in problem.getSuccessors(state):
-            g_cost = current + step_cost
-            if succ not in visited or g_cost < visited[succ]:
-                f_cost = g_cost + heuristic(succ, problem)
-                fringe.push(item=(succ, path + [direction], g_cost), priority=f_cost)
-
-    util.raiseNotDefined()
+        if curr_state not in closed or cost < closed[curr_state]:
+            closed[curr_state] = cost
+            for succ, direction, step_cost in problem.getSuccessors(curr_state):
+                g_cost = cost + step_cost
+                if succ not in closed or g_cost < closed[succ]:
+                    h_cost = heuristic(succ, problem)
+                    fringe.push((succ, path + [direction], g_cost), g_cost + h_cost)
+    return []
 
 
 # Abbreviations
