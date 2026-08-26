@@ -1,2 +1,3 @@
-# mscode
-Python, JupyterNB, ML, AI
+# MScode
+
+The description on this repo depends on each branch.
