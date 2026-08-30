@@ -1,0 +1,11 @@
+{
+    "sid": 101,
+    "name": "Rahul",
+    "dept": "Math",
+    "sem": "1st",
+    "marks": {
+        "subject1": 78,
+        "subject2": 82,
+        "subject3": 69
+    }
+}

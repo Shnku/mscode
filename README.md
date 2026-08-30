@@ -1,3 +1,1 @@
-# MScode
-
-The description on this repo depends on each branch.
+student-record-system/README.md
