@@ -1,11 +1,46 @@
-{
-    "sid": 101,
-    "name": "Rahul",
-    "dept": "Math",
-    "sem": "1st",
-    "marks": {
-        "subject1": 78,
-        "subject2": 82,
-        "subject3": 69
+[
+    {
+        "sid": 101,
+        "name": "Rahul",
+        "dept": "CSE",
+        "sem": "1st",
+        "marks": {
+            "subject1": 39,
+            "subject2": 80,
+            "subject3": 85
+        }
+    },
+    {
+        "sid": 102,
+        "name": "Priya",
+        "dept": "ECE",
+        "sem": "1st",
+        "marks": {
+            "subject1": 49,
+            "subject2": 80,
+            "subject3": 91
+        }
+    },
+    {
+        "sid": 103,
+        "name": "Amit",
+        "dept": "CSE",
+        "sem": "1st",
+        "marks": {
+            "subject1": 29,
+            "subject2": 80,
+            "subject3": 78
+        }
+    },
+    {
+        "sid": 104,
+        "name": "sbag",
+        "dept": "cs",
+        "sem": "2nd",
+        "marks": {
+            "subject1": 89,
+            "subject2": 99,
+            "subject3": 88
+        }
     }
-}
+]

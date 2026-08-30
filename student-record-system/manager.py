@@ -46,6 +46,8 @@ class StudentManager:
             write_txt_file(filename, self.student)
         else:
             print("Invalid format")
+            return False
+        return True
 
     def load_from_file(self, filename, format):
         if format == "csv":
@@ -61,6 +63,8 @@ class StudentManager:
             self.student.extend(data)
         else:
             print("Invalid format")
+            return False
+        return True
 
 
 # individually test this class file only...

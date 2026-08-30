@@ -6,15 +6,13 @@ from manager import StudentManager
 
 def main():
     parser = argparse.ArgumentParser(description="Student Record Management System")
-    parser.add_argument("--file", required=True, help="input file path")
-    parser.add_argument(
-        "--format", required=True, choices=["txt", "csv", "json"], help="file format"
-    )
+    parser.add_argument("--file", help="input file path")
+    parser.add_argument("--format", choices=["txt", "csv", "json"], help="file format")
     args = parser.parse_args()
 
     manager = StudentManager()
 
-    if os.path.exists(args.file):
+    if args.file and os.path.exists(args.file):
         print(f"Loading records from {args.file}...")
         manager.load_from_file(args.file, args.format)
         print(f"Loaded {len(manager.student)} student(s).")
@@ -24,7 +22,7 @@ def main():
         )
 
     while True:
-        print("\n=== Student Record Management System ===")
+        print("\n=========== Student Record Management System ===========")
         print("1. Add a New Student")
         print("2. Display All Students")
         print("3. Search for a Student by ID")
@@ -33,8 +31,10 @@ def main():
         print("6. Save Records to File")
         print("7. Display All Students including their Results")
         print("8. Exit")
+        print("-" * 100)
 
         choice = input("Enter choice (1-8): ").strip()
+        print("\n")
 
         match choice:
             case "1":
@@ -48,7 +48,7 @@ def main():
                     sem = input("Enter Semester: ").strip()
                     marks = []
                     for i in range(3):
-                        mark = int(input(f"Enter Marks for Subject{i + 1}: ").strip())
+                        mark = int(input(f"Enter Marks for Subject {i + 1}: ").strip())
                         marks.append(mark)
                     manager.add_student(sid, name, dept, sem, marks)
                     print(f"Student '{name}' added successfully.")
@@ -88,9 +88,15 @@ def main():
                     print("Invalid input. Student ID must be an integer.")
 
             case "6":
-                print(f"Saving records to {args.file} in {args.format} format...")
-                manager.save_to_file(args.file, args.format)
-                print("Records saved successfully.")
+                fname = input("Enter file name/path to save:")
+                fformat = input("Save in which format? (json,csv,txt):")
+                print(f"Saving records to {fname} in {fformat} format...")
+                ret = manager.save_to_file(fname, fformat)
+                print(
+                    "\nRecords saved successfully.\n"
+                    if ret
+                    else "\nFailed to save records.\n"
+                )
 
             case "7":
                 print("Print All details of Students........")

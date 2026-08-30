@@ -118,12 +118,12 @@ python main.py --file data/students.json --format json
 
 ## J. Sample Output
 
-```text
+```txt
 $ python main.py --file ./data/students.csv --format csv
 Loading records from ./data/students.csv...
 Loaded 3 student(s).
 
-=== Student Record Management System ===
+=========== Student Record Management System ===========
 1. Add a New Student
 2. Display All Students
 3. Search for a Student by ID
@@ -132,18 +132,87 @@ Loaded 3 student(s).
 6. Save Records to File
 7. Display All Students including their Results
 8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 2
+
+
+SID Name       Dept     Sem  Marks
+----------------------------------------------------------------------------------------------------
+101 Rahul      CSE      1st  39,80,85
+102 Priya      ECE      1st  49,80,91
+103 Amit       CSE      1st  29,80,78
+----------------------------------------------------------------------------------------------------
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 3
+
+
+Enter Student ID to search: 103
+
+--- Student Found ---
+Student ID: 103, Name: Amit, Department: CSE
+Semester: 1st
+Marks: [29, 80, 78]
+Total: 187
+Average: 62.333333333333336
+Result: Fail
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 1
+
+
+Enter Student ID (integer): 104
+Enter Student Name: sbag
+Enter Department: cs
+Enter Semester: 2nd
+Enter Marks for Subject 1: 89
+Enter Marks for Subject 2: 99
+Enter Marks for Subject 3: 88
+Student 'sbag' added successfully.
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
 Enter choice (1-8): 7
+
+
 Print All details of Students........
 
---- All Student Records ( 3) ---
-SID Name       Dept     Sem  Marks      Total   Average Result 
+--- All Student Records ( 4) ---
+SID Name       Dept     Sem  Marks      Total   Average Result
 ----------------------------------------------------------------------------------------------------
-101 Rahul      CSE      1st  39,80,85   204.00  68.00   Pass   
-102 Priya      ECE      1st  49,80,91   220.00  73.33   Pass   
-103 Amit       CSE      1st  29,80,78   187.00  62.33   Fail   
+101 Rahul      CSE      1st  39,80,85   204.00  68.00   Pass
+102 Priya      ECE      1st  49,80,91   220.00  73.33   Pass
+103 Amit       CSE      1st  29,80,78   187.00  62.33   Fail
+104 sbag       cs       2nd  89,99,88   276.00  92.00   Pass
 ----------------------------------------------------------------------------------------------------
 
-=== Student Record Management System ===
+=========== Student Record Management System ===========
 1. Add a New Student
 2. Display All Students
 3. Search for a Student by ID
@@ -152,11 +221,18 @@ SID Name       Dept     Sem  Marks      Total   Average Result
 6. Save Records to File
 7. Display All Students including their Results
 8. Exit
+----------------------------------------------------------------------------------------------------
 Enter choice (1-8): 6
-Saving records to file data/students.csv.........
-Saved 3 student(s) to data/students.csv successfully.
 
-=== Student Record Management System ===
+
+Enter file name/path to save:./data/students.json
+Save in which format? (json,csv,txt):json
+Saving records to ./data/students.json in json format...
+
+Records saved successfully.
+
+
+=========== Student Record Management System ===========
 1. Add a New Student
 2. Display All Students
 3. Search for a Student by ID
@@ -165,10 +241,163 @@ Saved 3 student(s) to data/students.csv successfully.
 6. Save Records to File
 7. Display All Students including their Results
 8. Exit
+----------------------------------------------------------------------------------------------------
 Enter choice (1-8): 8
+
+
 Exiting program!.........
-Exit code: 0
 ```
+
+<details>
+<summary><b>Output without Passing any command line argument</b></summary>
+
+```txt
+$ python main.py
+File 'None' not found. Starting with an empty student records database.
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 1
+
+
+Enter Student ID (integer): 34
+Enter Student Name: sbag
+Enter Department: cse
+Enter Semester: 3
+Enter Marks for Subject 1: 56
+Enter Marks for Subject 2: 78
+Enter Marks for Subject 3: 99
+Student 'sbag' added successfully.
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 1
+
+
+Enter Student ID (integer): 56
+Enter Student Name: ero
+Enter Department: mth
+Enter Semester: 6
+Enter Marks for Subject 1: 88
+Enter Marks for Subject 2: 90
+Enter Marks for Subject 3: 76
+Student 'ero' added successfully.
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 2
+
+
+SID Name       Dept     Sem  Marks
+----------------------------------------------------------------------------------------------------
+34  sbag       cse      3    56,78,99
+56  ero        mth      6    88,90,76
+----------------------------------------------------------------------------------------------------
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 7
+
+
+Print All details of Students........
+
+--- All Student Records ( 2) ---
+SID Name       Dept     Sem  Marks      Total   Average Result
+----------------------------------------------------------------------------------------------------
+34  sbag       cse      3    56,78,99   233.00  77.67   Pass
+56  ero        mth      6    88,90,76   254.00  84.67   Pass
+----------------------------------------------------------------------------------------------------
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 6
+
+
+Enter file name/path to save:./data/fucker
+Save in which format? (json,csv,txt):json
+Saving records to ./data/fucker in json format...
+
+Records saved successfully.
+
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 6
+
+
+Enter file name/path to save:sdad
+Save in which format? (json,csv,txt):wewe
+Saving records to sdad in wewe format...
+Invalid format
+
+Failed to save records.
+
+
+=========== Student Record Management System ===========
+1. Add a New Student
+2. Display All Students
+3. Search for a Student by ID
+4. Remove a Student by ID
+5. Calculate Total & Average Marks
+6. Save Records to File
+7. Display All Students including their Results
+8. Exit
+----------------------------------------------------------------------------------------------------
+Enter choice (1-8): 8
+
+
+Exiting program!.........
+
+```
+</details>
 
 ## K. Learning Outcome / Conclusion
 
