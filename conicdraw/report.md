@@ -1,0 +1,242 @@
+# Comparison & Observation Report
+
+## Comparison 1: Bresenham Circle vs Midpoint Circle
+
+### Tests
+
+#### Test Case 1: Centre=(100,100), r=10 - Small circle
+
+* NO. of iter is same in both: 8
+* So, no of generated points: 8 × 8 = 64
+
+**Bresenham**
+execution time: 0.000042  
+**Midpoint**
+execution time: 0.000051
+
+* No difference in generated points.
+
+---
+
+#### Test Case 2: Centre=(100,100), r=25 - Medium circle
+
+* NO. of iter is same in both: 18
+* So, no of generated points: 18 × 8 = 144
+
+**Bresenham**
+execution time: 0.000048  
+**Midpoint**
+execution time: 0.000052
+
+* There is Difference in these generated points among total 144 points.
+
+**Bresenham**
+
+```text
+(105,124), (124,105), (105,76), (124,95), (95,76), (76,95), (95,124), (76,105),
+```
+
+**Midpoint**
+
+```text
+(105,125), (125,105), (105,75), (125,95), (95,75), (75,95), (95,125), (75,105),
+```
+
+---
+
+#### Test Case 3: Centre=(150,150), r=50 - Large circle
+
+* NO. of iter is same in both: 36
+* So, no of generated points: 36 × 8 = 288
+
+**Bresenham**
+execution time: 0.000144  
+**Midpoint**
+execution time: 0.000138
+
+* There exists Difference in generated points.
+
+**Bresenham**
+
+```text
+(183,187), (187,183), (183,113), (187,117), (117,113), (113,117), (117,187), (113,183),
+(184,186), (186,184), (184,114), (186,116), (116,114), (114,116), (116,187), (114,184),
+(185,185), (185,185), (185,115), (185,115), (115,115), (115,115), (115,185), (115,185),
+```
+
+**Midpoint**
+
+```text
+(183,188), (188,183), (183,112), (188,117), (117,112), (112,117), (117,188), (112,183),
+(184,187), (187,184), (184,113), (187,116), (116,113), (113,116), (116,187), (113,184),
+(185,186), (186,185), (185,114), (186,115), (115,114), (114,115), (115,186), (114,185),
+```
+
+---
+
+#### Test Case 4: Centre=(0,0), r=8 - Centre at origin
+
+* NO. of iter is same in both: 6
+* So, no of generated points: 6 × 8 = 48
+
+**Bresenham**
+execution time: 0.000023  
+**Midpoint**
+execution time: 0.000020
+
+* No difference in generated points.
+
+---
+
+#### Test Case 5: Centre=(200,200), r=100 - Very large circle
+
+* NO. of iter is same in both: 71
+* So, no of generated points: 71 × 8 = 568
+
+**Bresenham**
+execution time: 0.000260  
+**Midpoint**
+execution time: 0.000297
+
+* There exists Difference in these points among 568 points.
+
+**Bresenham**
+
+```text
+(210,299), (299,210), (210,101), (299,190), (190,101), (101,190), (190,299), (101,210),
+
+(238,292), (292,238), (238,108), (292,162), (162,108), (108,162), (162,292), (108,238),
+
+(250,286), (286,250), (250,114), (286,150), (150,114), (114,150), (150,286), (114,250),
+
+(255,283), (283,255), (255,117), (283,145), (145,117), (117,145), (145,283), (117,255),
+
+(263,277), (277,263), (263,123), (277,137), (137,123), (123,137), (137,277), (123,263),
+```
+
+**Midpoint**
+
+```text
+(210,300), (300,210), (210,100), (300,190), (190,100), (100,190), (190,300), (100,210),
+
+(238,293), (293,238), (238,107), (293,162), (162,107), (107,162), (162,293), (107,238),
+
+(250,287), (287,250), (250,113), (287,150), (150,113), (113,150), (150,287), (113,250),
+
+(255,284), (284,255), (255,116), (284,145), (145,116), (116,145), (116,284), (116,255),
+
+(263,278), (278,263), (263,122), (278,137), (137,122), (122,137), (137,278), (122,263),
+```
+
+---
+
+#### Test Case 6: Centre=(100,100), r=3 - Very small radius
+
+* NO. of iter is same in both: 3
+* So, no of generated points: 3 × 8 = 24
+
+**Bresenham**
+execution time: 0.000010  
+**Midpoint**
+execution time: 0.000014
+
+* No difference in generated points.
+
+### Observations
+
+* So, in case of Bresenhams it takes less time to execute.
+* and also in some cases there is different set of points generated.
+* Both algorithm uses integer arithmetic, but still the difference in point generation occurs because:  of the *update* formula.  
+$d=3-2r=2(1-r)+1=2p+1$  
+and when measuring the difference $d_k, d_{k+1}$ or $p_k, p_{k+1}$  
+the the calculation deviates the decision $p < 0$ or $p > 0$
+
+---
+
+## Comparison 2: Circle Algorithm vs Ellipse Algorithm
+
+* In Ellipse it has 4 way symmetry. So, from one point calculton we can generate 4 pother points.  
+But in cse of circle we can generate 8 points together.
+* The 4 way symmetry of the ellipse is also devided into two region base of tangent line $\tan\theta =135\degree $ where the $\frac{dy}{dx}=-1$.
+  * While itring form top point $(x,y)=(0,b)$, $x$ is increasing serially $x=x+1$ but decreasing of y depends on decision parameter $y_{k+1}=y_k$ or $y_{k+1}=y_k -1$.
+  * after the tangent line it reverses, $y$ decresing $(y=y-1)$ serially but $x$ need to be determine to choose the next $x_{k+1}=x_k$  or current pixel $x_{k+1}=x_k +1$.
+* We also perform the midpoint ellipse decision parameter in integer calculation . it removes the precision but makes it faster.  
+Using floating point decision parameter produces different results.
+
+### Output of Ellipse Case 3 ($r_x=r_y=25$) against Circle Case 2 ($r=25$)
+
+* Difference between points generated by ellipse vs circle midpoint algorithm
+* In ellipse there are $4\times 44=176$ points generated.
+* In case of circle $8\times 17=136$ points
+
+**Ellipse:**  
+
+```text
+Case 3: Centre=(100,100), rx=25, ry=25
+(100,125), (100,75), (100,125), (100,75),
+(101,125), (101,75), (99,125), (99,75),
+(102,125), (102,75), (98,125), (98,75),
+(103,125), (103,75), (97,125), (97,75),
+(104,125), (104,75), (96,125), (96,75),
+(105,124), (105,76), (95,124), (95,76),
+(106,124), (106,76), (94,124), (94,76),
+(107,124), (107,76), (93,124), (93,76),
+(108,124), (108,76), (92,124), (92,76),
+(109,123), (109,77), (91,123), (91,77),
+(110,123), (110,77), (90,123), (90,77),
+(111,122), (111,78), (89,122), (89,78),
+(112,122), (112,78), (88,122), (88,78),
+(113,121), (113,79), (87,121), (87,79),
+(114,121), (114,79), (86,121), (86,79),
+(115,120), (115,80), (85,120), (85,80),
+(116,119), (116,81), (84,119), (84,81),
+(117,118), (117,82), (83,118), (83,82),
+(118,117), (118,83), (82,117), (82,83),
+(119,116), (119,84), (81,116), (81,84),
+(120,115), (120,85), (80,115), (80,85),
+(121,114), (121,86), (79,114), (79,86),
+(121,113), (121,87), (79,113), (79,87),
+(122,112), (122,88), (78,112), (78,88),
+(122,111), (122,89), (78,111), (78,89),
+(123,110), (123,90), (77,110), (77,90),
+(123,109), (123,91), (77,109), (77,91),
+(124,108), (124,92), (76,108), (76,92),
+(124,107), (124,93), (76,107), (76,93),
+(124,106), (124,94), (76,106), (76,94),
+(124,105), (124,95), (76,105), (76,95),
+(125,104), (125,96), (75,104), (75,96),
+(125,103), (125,97), (75,103), (75,97),
+(125,102), (125,98), (75,102), (75,98),
+(125,101), (125,99), (75,101), (75,99),
+(125,100), (125,100), (75,100), (75,100)
+```
+
+**Circle:**  
+
+```text
+midpoint_circle>Case 2: Centre=(100,100), r=25 - Medium circle
+(100,125), (125,100), (100,75), (125,100), (100,75), (75,100), (100,125), (75,100),
+(101,125), (125,101), (101,75), (125,99), (99,75), (75,99), (99,125), (75,101),
+(102,125), (125,102), (102,75), (125,98), (98,75), (75,98), (98,125), (75,102),
+(103,125), (125,103), (103,75), (125,97), (97,75), (75,97), (97,125), (75,103),
+(104,125), (125,104), (104,75), (125,96), (96,75), (75,96), (96,125), (75,104),
+(105,125), (125,105), (105,75), (125,95), (95,75), (75,95), (95,125), (75,105),
+(106,124), (124,106), (106,76), (124,94), (94,76), (76,94), (94,124), (76,106),
+(107,124), (124,107), (107,76), (124,93), (93,76), (76,93), (93,124), (76,107),
+(108,124), (124,108), (108,76), (124,92), (92,76), (76,92), (92,124), (76,108),
+(109,123), (123,109), (109,77), (123,91), (91,77), (77,91), (91,123), (77,109),
+(110,123), (123,110), (110,77), (123,90), (90,77), (77,90), (90,123), (77,110),
+(111,122), (122,111), (111,78), (122,89), (89,78), (78,89), (89,122), (78,111),
+(112,122), (122,112), (112,78), (122,88), (88,78), (78,88), (88,122), (78,112),
+(113,121), (121,113), (113,79), (121,87), (87,79), (79,87), (87,121), (79,113),
+(114,121), (121,114), (114,79), (121,86), (86,79), (79,86), (86,121), (79,114),
+(115,120), (120,115), (115,80), (120,85), (85,80), (80,85), (85,120), (80,115),
+(116,119), (119,116), (116,81), (119,84), (84,81), (81,84), (84,119), (81,116),
+(117,118), (118,117), (117,82), (118,83), (83,82), (82,83), (83,118), (82,117),
+```
+
+* There is *Huge* difference in execution time
+  * ellipse execution time: 0.000355
+  * Circle execution time: 0.000052
+
+ellipse midpoint generally takes a lot more time due to more complex decision parameter calculation.(though no floating point calculation used).
