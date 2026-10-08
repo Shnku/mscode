@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "sets_structure.c"
+#include "valid_cnf.c"
 
 // ================ Clean CYK Algorithm  ==================
 bool cyk(const char *word, const Rule grammar[], int rule_count, char start_symbol)
@@ -66,9 +67,19 @@ int main(void)
                       {'B', "CC"}, {'B', "b"},  {'C', "AB"}, {'C', "a"}};
     int rule_count = sizeof(grammar) / sizeof(grammar[0]);
 
+    // 1. Check if the grammar is in valid CNF before running CYK
+    printf("Validating grammar: %s\n", is_cnf_grammer(grammar, rule_count) ? "[PASS] Valid CNF" : "[FAIL] Invalid CNF");
+
+    if (!is_cnf_grammer(grammar, rule_count))
+    {
+        printf("Error: Provided grammar is not in Chomsky Normal Form (CNF).\n");
+        return 1;
+    }
+
+    // 2. Test word
     const char *word = "baaba";
 
-    printf("Testing word: \"%s\"\n", word);
+    printf("\nTesting word: \"%s\"\n", word);
     if (cyk(word, grammar, rule_count, 'S'))
     {
         printf("\nResult: Word \"%s\" is ACCEPTED by the grammar.\n", word);

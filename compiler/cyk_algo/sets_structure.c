@@ -1,3 +1,6 @@
+#ifndef SETS_STRUCTURE_C
+#define SETS_STRUCTURE_C
+
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -91,3 +94,5 @@ Set get_matching_lhs(Set left_set, Set right_set, const Rule grammar[], int rule
     }
     return result;
 }
+
+#endif // SETS_STRUCTURE_C
