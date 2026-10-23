@@ -23,6 +23,7 @@ ENV/
 .nox/
 .coverage
 htmlcov/
+*__marimo__/
 
 # Build and packaging artifacts
 build/
