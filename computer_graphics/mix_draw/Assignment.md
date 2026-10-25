@@ -84,12 +84,3 @@ folder, create that folder first, or the program will stop with a
 file-not-found error.
 5. Add a comment above each function naming the
 algorithm it implements.
-
-### Submission
-
-To be submitted when the college reopens after the Puja
-break. Submit one ZIP file named with your roll number, containing:  
-
-* `<your roll no>`{=html}-a04.py --- your program, with comments.  
-* The two PNG figures (the given radius and your own variation).  
-* One Word or PDF file containing the printed point lists, the point counts, both figures, and your answers to the four questions.

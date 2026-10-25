@@ -19,7 +19,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
 
-    return mo, plt
+    return mo, np, plt
 
 
 @app.cell(hide_code=True)
@@ -189,7 +189,7 @@ def _():
 @app.cell
 def _(line):
     # print the points
-    print(line[0], line[1], sep="\n")
+    print(line[0], len(line[0]),line[1], len(line[1]), sep="\n")
     return
 
 
@@ -202,8 +202,8 @@ def _():
 
 @app.cell
 def _(circle1, circle2):
-    print(circle1[0], circle1[1], sep="\n")
-    print(circle2[0], circle2[1], sep="\n")
+    print(circle1[0],len(circle1[0]), circle1[1],len(circle1[1]), sep="\n")
+    print(circle2[0],len(circle2[0]), circle2[1],len(circle2[1]), sep="\n")
     return
 
 
@@ -216,8 +216,8 @@ def _():
 
 @app.cell
 def _(el1, el2):
-    print(el1[0], el1[1], sep="\n")
-    print(el2[0], el2[1], sep="\n")
+    print(el1[0],len(el1[0]), el1[1],len(el1[1]), sep="\n")
+    print(el2[0],len(el2[0]), el2[1],len(el2[1]), sep="\n")
     return
 
 
@@ -237,7 +237,103 @@ def _(circle1, circle2, el1, el2, line, plt):
 
 @app.cell
 def _():
+    # shifted face
+    circle1_s = Midpoint_circle(centre=(90, 250), radius=35 + 3)
+
+    print(circle1_s[0], len(circle1_s[0]), circle1_s[1], len(circle1_s[1]), sep="\n")
+
+    return (circle1_s,)
+
+
+@app.cell
+def _(get_mirror_translate):
+    ## Aditional decoration ...
+
+    h1 = Bresenhams_line((25, 240), (50, 180))
+    h2 = Bresenhams_line((0, 225), (50, 175))
+    h3 = Bresenhams_line((-10, 200), (50, 170))
+    h4 = Bresenhams_line((-15, 180), (50, 165))
+    h5 = Bresenhams_line((-10, 150), (50, 160))
+
+    h6 = Bresenhams_line((130, 190), (100, 150))
+    h7 = get_mirror_translate(h2, shift=(180, 0))
+    h8 = get_mirror_translate(h3, shift=(180, 0))
+    h9 = get_mirror_translate(h4, shift=(180, 0))
+    h10 = get_mirror_translate(h5, shift=(180, 0))
+
+    mh1=Bresenhams_line((150,70),(175,100))
+    mh2=Bresenhams_line((190,40),(230,25))
+    return h1, h10, h2, h3, h4, h5, h6, h7, h8, h9, mh1, mh2
+
+
+@app.cell
+def _(
+    circle1_s,
+    circle2,
+    el1,
+    el2,
+    h1,
+    h10,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    h7,
+    h8,
+    h9,
+    line,
+    mh1,
+    mh2,
+    plt,
+):
+    plt.scatter(circle1_s[0], circle1_s[1], s=0.2)
+    plt.scatter(circle2[0], circle2[1], s=0.2)
+    plt.scatter(line[0], line[1], s=0.2)
+    plt.scatter(el1[0], el1[1], s=0.2)
+    plt.scatter(el2[0], el2[1], s=0.2)
+    plt.scatter(h1[0], h1[1], s=0.2)
+    plt.scatter(h2[0], h2[1], s=0.2)
+    plt.scatter(h3[0], h3[1], s=0.2)
+    plt.scatter(h4[0], h4[1], s=0.2)
+    plt.scatter(h5[0], h5[1], s=0.2)
+    plt.scatter(h6[0], h6[1], s=0.2)
+    plt.scatter(h7[0], h7[1], s=0.2)
+    plt.scatter(h8[0], h8[1], s=0.2)
+    plt.scatter(h9[0], h9[1], s=0.2)
+    plt.scatter(h10[0], h10[1], s=0.2)
+
+    plt.scatter(mh1[0], mh1[1], s=0.2)
+    plt.scatter(mh2[0], mh2[1], s=0.2)
+
+    plt.axis("equal")
+    plt.savefig("out2.png")
+    plt.show()
     return
+
+
+@app.cell
+def _(np):
+    # transformation matrxix for reflct along y axis and shift position
+    # points  are in xlist,ylist -> 2xn matrix
+    # matrix multiplication 2x2,2xn => 2xn
+    # for homogeneous (xlist,ylist,hlist) -> 3xn matrix ==> 3x3,3xn -> 3xn output ==> 2xn output
+
+
+    def get_mirror_translate(points_matrix, shift):
+        points_matrix = np.array(points_matrix)
+        x, y = shift
+        h_cord = np.vstack([points_matrix, np.ones(points_matrix.shape[1])])
+        mat = np.array(
+            [
+                [-1, 0, x],
+                [0, 1, y],
+                [0, 0, 1],
+            ]
+        )
+        return np.dot(mat, h_cord)
+
+    return (get_mirror_translate,)
 
 
 if __name__ == "__main__":
