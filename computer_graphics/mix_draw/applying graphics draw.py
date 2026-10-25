@@ -189,7 +189,7 @@ def _():
 @app.cell
 def _(line):
     # print the points
-    print(line[0], len(line[0]),line[1], len(line[1]), sep="\n")
+    print(f"Line Points: {len(line[0])}\n", ",".join(str(p) for p in zip(line[0], line[1])))
     return
 
 
@@ -202,8 +202,8 @@ def _():
 
 @app.cell
 def _(circle1, circle2):
-    print(circle1[0],len(circle1[0]), circle1[1],len(circle1[1]), sep="\n")
-    print(circle2[0],len(circle2[0]), circle2[1],len(circle2[1]), sep="\n")
+    print(f"Circle 1 Points: {len(circle1[0])}\n", ",".join(str(p) for p in zip(circle1[0], circle1[1])))
+    print(f"Circle 2 Points: {len(circle2[0])}\n", ",".join(str(p) for p in zip(circle2[0], circle2[1])))
     return
 
 
@@ -216,8 +216,8 @@ def _():
 
 @app.cell
 def _(el1, el2):
-    print(el1[0],len(el1[0]), el1[1],len(el1[1]), sep="\n")
-    print(el2[0],len(el2[0]), el2[1],len(el2[1]), sep="\n")
+    print(f"Ellipse 1 Points: {len(el1[0])}\n", ",".join(str(p) for p in zip(el1[0], el1[1])))
+    print(f"Ellipse 2 Points: {len(el2[0])}\n", ",".join(str(p) for p in zip(el2[0], el2[1])))
     return
 
 
@@ -240,7 +240,10 @@ def _():
     # shifted face
     circle1_s = Midpoint_circle(centre=(90, 250), radius=35 + 3)
 
-    print(circle1_s[0], len(circle1_s[0]), circle1_s[1], len(circle1_s[1]), sep="\n")
+    print(
+        f"Circle 1 Points after radius change: {len(circle1_s[0])}\n",
+        ",".join(str(p) for p in zip(circle1_s[0], circle1_s[1])),
+    )
 
     return (circle1_s,)
 
