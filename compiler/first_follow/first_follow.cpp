@@ -1,6 +1,5 @@
 #include "grammer.cpp"
 #include <cstdio>
-#include <iostream>
 #include <map>
 #include <stdbool.h>
 using namespace std;
@@ -31,30 +30,76 @@ struct symbolSet {
     }
     bool contains(char c) { return term.count(c); }
     // print
-    void print()
+    bool print()
     {
         for (auto it : term)
             printf("%c, ", it);
+        return true;
     }
 };
 
 typedef map<char, symbolSet> FIRST, FOLLOW;
 
-void print_set(map<char, symbolSet> f, string msg, string name = "FOLLOW")
+bool print_set(map<char, symbolSet> f, string msg, string name = "FOLLOW")
 {
-    printf(":::%s::", msg.c_str());
+    printf(":::%s:: [ ", msg.c_str());
     for (auto it : f) {
         printf("%s(%c)->{ ", name.c_str(), it.first);
         it.second.print();
         printf("}, ");
     }
-    printf("\n");
+    printf("]\n");
+    return true;
 }
 
-void print_first_set(FIRST f, string msg = "first set") { print_set(f, msg, "FIRST"); }
-void print_follow_set(FOLLOW f, string msg = "follow set") { print_set(f, msg, "FOLLOW"); }
+bool print_first_set(FIRST f, string msg = "first set") { return print_set(f, msg, "FIRST"); }
+bool print_follow_set(FOLLOW f, string msg = "follow set") { return print_set(f, msg, "FOLLOW"); }
 
-FIRST find_first(grammar g)
+symbolSet find_first_of_string(string alpha, grammar g, FIRST first, bool log = true)
+{
+    // alpha = ABC
+    // FA(alpha)=FA(A)
+    // if ε ∈ FA(A), then {FA(A)-{ε}} u FA(alpha) = FA(alpha)
+    // if ε ∈ FA(B), then {FA(B)-{ε}} u FA(alpha) = FA(alpha)
+    // if ε ∈ FA(C), then {FA(C)-{ε}} u FA(alpha) = FA(alpha)
+    // if # ∈ FA(alpha)
+
+    string X = alpha;
+    symbolSet First_of_alpha;
+
+    // for terminal Y1 = terminal;  FIRST(X)u{Y1}
+    if (g.is_terminal(X[0])) {
+        log ? printf("processing:- %c in <%s> :: ", X[0], alpha.c_str()) : 0;
+        log ? printf("terminal => FIRST(%c) u FIRST(%s)\n", X[0], alpha.c_str()) : 0;
+        First_of_alpha.add(X[0]);
+        return First_of_alpha;
+    }
+
+    // Yi = non-terminal; FIRST(X) u {FIRST(Yi)\{ε}}
+    bool derive_eplison = true;
+    for (char Y : alpha) {
+        log ? printf("processing:- %c in <%s> :: ", Y, alpha.c_str()) : 0;
+        derive_eplison = false;
+        log ? printf("non-terminal => {FIRST(%c)\\{ε}} u FIRST(%s)\n", Y, alpha.c_str()) : 0;
+        First_of_alpha.add_all_except(first[Y], '#');
+
+        // If ε ∈ FIRST(Yi), continue to next symbol in α
+        if (first[Y].contains('#')) {
+            log ? printf("ε ∈ FIRST(%c) => continue to next symbol in α\n", Y) : 0;
+            derive_eplison = true;
+            continue;
+        }
+    }
+
+    // if each of yi=>ε then X =>* ε, add ε to FIRST(X)
+    if (derive_eplison) {
+        log ? printf("<%s> =>* ε, add ε to FIRST(%s)\n", alpha.c_str(), X.c_str()) : 0;
+        First_of_alpha.add('#');
+    }
+    return First_of_alpha;
+}
+
+FIRST find_first(grammar g, bool log = true)
 {
     FIRST first;
     // For each terminal 'a', FIRST(a) = {a}
@@ -65,12 +110,12 @@ FIRST find_first(grammar g)
     // For each non-terminal A:- Initialize FIRST(A) = ∅
     for (char X : g.nonTerminals)
         first[X] = { };
-    print_first_set(first);
+    log ? print_first_set(first) : 0;
 
     // Repeat the firstollowing steps until no more changes occur:
     bool changed;
     do {
-        printf("\n<===========================>running passes<===========================>\n");
+        log ? printf("\n<===========================>running passes<===========================>\n") : 0;
         changed = false;
 
         // For each production X->alpha:
@@ -80,80 +125,27 @@ FIRST find_first(grammar g)
 
             // Epsilon Production : X->ε, FIRST(X) u {ε}
             if (alpha == "#") {
-                if (first[X].add('#'))
+                if (first[X].add('#')) {
                     changed = true;
-                print_first_set(first);
+                    log ? print_first_set(first) : 0;
+                }
                 continue;
             }
 
             // for X->alpha , where alpha = Y1Y2...Yk
-            for (char Y : alpha) {
-                print_first_set(first);
-                // for terminal Y1 = terminal FIRST(X) u {Y1}
-                printf("processing: %c<%s> => ", Y, alpha.c_str());
-                if (g.is_terminal(Y)) {
-                    printf("terminal => FIRST(%c)u{%c}\n", X, Y);
-                    if (first[X].add(Y))
-                        changed = true;
-                    break;
-                } else {
-                    // Yi = non-terminal, {FIRST(Yi)\{ε}} u FIRST(X)
-                    printf("non-terminal => add first(%c)\\{ε} to first(%c)\n", Y, X);
-                    if (first[X].add_all_except(first[Y], '#'))
-                        changed = true;
-                    // If ε ∈ FIRST(Yi), continue to next symbol in α
-                    if (first[Y].contains('#')) {
-                        printf("ε ∈ FIRST(%c) => continue to next symbol in α\n", Y);
-                        continue;
-                    } else // Else, break
-                        break;
-                }
+            symbolSet s = find_first_of_string(alpha, g, first, log);
+            if (first[X].add(s)) {
+                changed = true;
+                log ? print_first_set(first) : 0;
             }
         }
     } while (changed);
-    printf("\n\n<===#################First calculation done#################=>\n\n");
+    print_first_set(first);
+    log ? printf("\n<===################# First calculation done #################=>\n\n\n") : 0;
     return first;
 }
 
-symbolSet find_first_of_string(string alpha, grammar g, FIRST first)
-{
-    // alpha = ABC
-    // FA(alpha)=FA(A)
-    // if ε ∈ FA(A), then {FA(A)-{ε}} u FA(alpha) = FA(alpha)
-    // if ε ∈ FA(B), then {FA(B)-{ε}} u FA(alpha) = FA(alpha)
-    // if ε ∈ FA(C), then {FA(C)-{ε}} u FA(alpha) = FA(alpha)
-    // if # ∈ FA(alpha)
-
-    string X = alpha;
-    symbolSet F;
-    bool al_empty = false;
-    for (char Y : alpha) {
-        // for terminal Y1 = terminal FIRST(X) u {Y1}
-        // printf("processing__%c__:__%s__ => ", Y, alpha.c_str());
-        if (g.is_terminal(Y)) {
-            // printf("Yi = terminal => FIRST(%c) u {%c}\n", X, Y);
-            F.add(Y);
-            // print_set(first, "First set\n");
-            break;
-        } else {
-            // Yi = non-terminal, {FIRST(Yi)\{ε}} u FIRST(X)
-            // printf("Yi = non-terminal => add first(%c)-{ε} to first(%c)\n", Y, X);
-            F.add_all_except(first[Y], '#');
-            // If ε ∈ FIRST(Yi), continue to next symbol in α
-            if (first[Y].contains('#')) {
-                // printf("ε ∈ FIRST(%c) => continue to next symbol in α\n", Y);
-                al_empty = true;
-                continue;
-            } else // Else, break
-                break;
-        }
-    }
-    if (al_empty)
-        F.add('#');
-    return F;
-}
-
-FOLLOW find_follow(grammar g, FIRST first)
+FOLLOW find_follow(grammar g, FIRST first, bool log = true)
 {
     FOLLOW follow;
 
@@ -163,12 +155,12 @@ FOLLOW find_follow(grammar g, FIRST first)
 
     // For start symbol : $ ∈ FOLLOW(S)
     follow[g.StartSymbol].add('$');
-    print_set(follow, "Initial follow set");
+    log ? print_set(follow, "Initial follow set") : 0;
 
     // Repeat until no more changes occur:
     bool changed;
     do {
-        printf("\n<===========================>running passes<===========================>\n");
+        log ? printf("\n<===========================>running passes<===========================>\n") : 0;
         changed = false;
 
         // For each production A->αBβ:
@@ -181,29 +173,31 @@ FOLLOW find_follow(grammar g, FIRST first)
                 char B = alpha_B_beta[i];
                 string beta = alpha_B_beta.substr(i + 1);
                 if (g.is_non_terminal(B) && !beta.empty()) {
-                    printf("Seperation of production:: %c -> %s (NT:%c | beta:%s)\n", A, alpha_B_beta.c_str(), B, beta.c_str());
+                    log ? printf("Seperation of production:: %c -> %s where, NT:-%c and ß:-%s\n", A, alpha_B_beta.c_str(), B, beta.c_str()) : 0;
                     // If there is a production A->αBβ, then  FOLLOW(B) = FIRST(β)\ε
                     // β=ABCDEF..., so FIRST(β)
-                    symbolSet betaFirst = find_first_of_string(beta, g, first);
-                    printf(">>>>>finding FIRST of beta:: FIRST(%s) = { ", beta.c_str());
-                    betaFirst.print();
-                    printf("}\n");
-                    printf("production A->αBβ => FOLLOW(%c)=FIRST(%s)\\{ε}\n", B, beta.c_str());
-                    if (follow[B].add_all_except(betaFirst, '#'))
+                    symbolSet betaFirst = find_first_of_string(beta, g, first, log);
+                    log ? printf(">>>>>finding FIRST of ß:: FIRST(%s) = { ", beta.c_str()) : 0;
+                    log ? betaFirst.print() : 0;
+                    log ? printf("}\nproduction %c->α%cß => FOLLOW(%c)=FIRST(%s)\\{ε}\n", A, B, B, beta.c_str()) : 0;
+                    if (follow[B].add_all_except(betaFirst, '#')) {
+                        log ? print_follow_set(follow) : 0;
                         changed = true;
-
+                    }
                     // if there is a production A->αB or A->αBβ and ε ∈ FIRST(β), then FOLLOW(B) = FOLLOW(A)
                     if (betaFirst.contains('#')) {
-                        printf("production A->αB or A->αBβ and ε ∈ FIRST(%s) => FOLLOW(%c)=FOLLOW(%c)\n", beta.c_str(), B, A);
-                        if (follow[B].add(follow[A]))
+                        log ? printf("production %c->α%c or %c->α%cß and ε ∈ FIRST(%s) => FOLLOW(%c)=FOLLOW(%c)\n", A, B, A, B, beta.c_str(), B, A) : 0;
+                        if (follow[B].add(follow[A])) {
+                            log ? print_follow_set(follow) : 0;
                             changed = true;
+                        }
                     }
                 }
-                print_follow_set(follow);
             }
         }
     } while (changed);
-
+    print_follow_set(follow);
+    log ? printf("\n\n<===################# Follow calculation done #################=>\n\n") : 0;
     return follow;
 }
 
@@ -224,10 +218,14 @@ int main()
 #if 1
     g = grammar({ "S->SBC", "C->#", "B->bB" });
     g.print_the_whole_grammer();
+    find_follow(g, find_first(g, false), false);
 
-    FIRST f = find_first(g);
-    find_follow(g, f);
-    return 0;
+#endif
+
+#if 1
+    g = grammar({ "S->ABC", "A->a", "A->#", "B->b", "B->#", "C->c", "C->#" });
+    g.print_the_whole_grammer();
+    find_follow(g, find_first(g));
 
 #endif
 }

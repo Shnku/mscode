@@ -91,20 +91,18 @@ struct grammar {
         }
         r += "}";
 
-        int width = 55;
-        if ((int)r.length() + 21 > width)
-            width = (int)r.length() + 25;
+        int width = (int)r.length() + 25;
 
         string eq_border = "+" + string(width, '=') + "+";
         string dash_border = "+" + string(width, '-') + "+";
 
         printf("\n%s\n", eq_border.c_str());
-        printf("|%*s%*s|\n", (width + 11) / 2, "THE GRAMMAR", width - (width + 11) / 2, "");
+        printf("|%*s%*s|\n", width / 2, "THE GRAMMAR", width / 2, "");
         printf("%s\n", eq_border.c_str());
-        printf("| Non-Terminals    : %-*s |\n", width - 21, nt.c_str());
-        printf("| Terminals        : %-*s |\n", width - 21, t.c_str());
-        printf("| Start symbol     : %-*c |\n", width - 21, StartSymbol);
-        printf("| Production Rules : %-*s |\n", width - 21, r.c_str());
+        printf("| Non-Terminals    : %-*s|\n", width - 21, nt.c_str());
+        printf("| Terminals        : %-*s|\n", width - 21, t.c_str());
+        printf("| Start symbol     : %-*c|\n", width - 21, StartSymbol);
+        printf("| Production Rules : %-*s|\n", width - 21, r.c_str());
         printf("%s\n\n", dash_border.c_str());
     }
 };

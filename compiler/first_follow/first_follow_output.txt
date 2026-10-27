@@ -1,0 +1,193 @@
+
++=========================================+
+|         THE GRAMMAR                    |
++=========================================+
+| Non-Terminals    : { A, B, C, }        |
+| Terminals        : { #, }              |
+| Start symbol     : A                   |
+| Production Rules : { A->BC, A->#, }    |
++-----------------------------------------+
+
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ }, FIRST(C)->{ }, ]
+
+<===========================>running passes<===========================>
+processing:- B in <BC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BC)
+processing:- C in <BC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BC)
+:::first set:: [ FIRST(A)->{ #, }, FIRST(B)->{ }, FIRST(C)->{ }, ]
+
+<===========================>running passes<===========================>
+processing:- B in <BC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BC)
+processing:- C in <BC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BC)
+:::first set:: [ FIRST(A)->{ #, }, FIRST(B)->{ }, FIRST(C)->{ }, ]
+
+<===################# First calculation done #################=>
+
+
+
++====================================================================+
+|                       THE GRAMMAR                                  |
++====================================================================+
+| Non-Terminals    : { A, B, C, D, E, F, }                          |
+| Terminals        : { #, }                                         |
+| Start symbol     : A                                              |
+| Production Rules : { A->BCDEF, B->#, C->#, D->#, F->#, E->#, }    |
++--------------------------------------------------------------------+
+
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ }, FIRST(C)->{ }, FIRST(D)->{ }, FIRST(E)->{ }, FIRST(F)->{ }, ]
+
+<===========================>running passes<===========================>
+processing:- B in <BCDEF> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BCDEF)
+processing:- C in <BCDEF> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BCDEF)
+processing:- D in <BCDEF> :: non-terminal => {FIRST(D)\{ε}} u FIRST(BCDEF)
+processing:- E in <BCDEF> :: non-terminal => {FIRST(E)\{ε}} u FIRST(BCDEF)
+processing:- F in <BCDEF> :: non-terminal => {FIRST(F)\{ε}} u FIRST(BCDEF)
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ #, }, FIRST(C)->{ }, FIRST(D)->{ }, FIRST(E)->{ }, FIRST(F)->{ }, ]
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ #, }, FIRST(C)->{ #, }, FIRST(D)->{ }, FIRST(E)->{ }, FIRST(F)->{ }, ]
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ #, }, FIRST(C)->{ #, }, FIRST(D)->{ #, }, FIRST(E)->{ }, FIRST(F)->{ }, ]
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ #, }, FIRST(C)->{ #, }, FIRST(D)->{ #, }, FIRST(E)->{ }, FIRST(F)->{ #, }, ]
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ #, }, FIRST(C)->{ #, }, FIRST(D)->{ #, }, FIRST(E)->{ #, }, FIRST(F)->{ #, }, ]
+
+<===========================>running passes<===========================>
+processing:- B in <BCDEF> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(B) => continue to next symbol in α
+processing:- C in <BCDEF> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(C) => continue to next symbol in α
+processing:- D in <BCDEF> :: non-terminal => {FIRST(D)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(D) => continue to next symbol in α
+processing:- E in <BCDEF> :: non-terminal => {FIRST(E)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(E) => continue to next symbol in α
+processing:- F in <BCDEF> :: non-terminal => {FIRST(F)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(F) => continue to next symbol in α
+<BCDEF> =>* ε, add ε to FIRST(BCDEF)
+:::first set:: [ FIRST(A)->{ #, }, FIRST(B)->{ #, }, FIRST(C)->{ #, }, FIRST(D)->{ #, }, FIRST(E)->{ #, }, FIRST(F)->{ #, }, ]
+
+<===========================>running passes<===========================>
+processing:- B in <BCDEF> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(B) => continue to next symbol in α
+processing:- C in <BCDEF> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(C) => continue to next symbol in α
+processing:- D in <BCDEF> :: non-terminal => {FIRST(D)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(D) => continue to next symbol in α
+processing:- E in <BCDEF> :: non-terminal => {FIRST(E)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(E) => continue to next symbol in α
+processing:- F in <BCDEF> :: non-terminal => {FIRST(F)\{ε}} u FIRST(BCDEF)
+ε ∈ FIRST(F) => continue to next symbol in α
+<BCDEF> =>* ε, add ε to FIRST(BCDEF)
+:::first set:: [ FIRST(A)->{ #, }, FIRST(B)->{ #, }, FIRST(C)->{ #, }, FIRST(D)->{ #, }, FIRST(E)->{ #, }, FIRST(F)->{ #, }, ]
+
+<===################# First calculation done #################=>
+
+
+
++=================================================+
+|             THE GRAMMAR                        |
++=================================================+
+| Non-Terminals    : { B, C, S, }                |
+| Terminals        : { #, b, }                   |
+| Start symbol     : S                           |
+| Production Rules : { S->SBC, C->#, B->bB, }    |
++-------------------------------------------------+
+
+:::first set:: [ FIRST(B)->{ b, }, FIRST(C)->{ #, }, FIRST(S)->{ #, b, }, ]
+:::follow set:: [ FOLLOW(B)->{ $, b, }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, b, }, ]
+
++========================================================================+
+|                         THE GRAMMAR                                    |
++========================================================================+
+| Non-Terminals    : { A, B, C, S, }                                    |
+| Terminals        : { #, a, b, c, }                                    |
+| Start symbol     : S                                                  |
+| Production Rules : { S->ABC, A->a, A->#, B->b, B->#, C->c, C->#, }    |
++------------------------------------------------------------------------+
+
+:::first set:: [ FIRST(A)->{ }, FIRST(B)->{ }, FIRST(C)->{ }, FIRST(S)->{ }, ]
+
+<===========================>running passes<===========================>
+processing:- A in <ABC> :: non-terminal => {FIRST(A)\{ε}} u FIRST(ABC)
+processing:- B in <ABC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(ABC)
+processing:- C in <ABC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(ABC)
+processing:- a in <a> :: terminal => FIRST(a) u FIRST(a)
+:::first set:: [ FIRST(A)->{ a, }, FIRST(B)->{ }, FIRST(C)->{ }, FIRST(S)->{ }, ]
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ }, FIRST(C)->{ }, FIRST(S)->{ }, ]
+processing:- b in <b> :: terminal => FIRST(b) u FIRST(b)
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ b, }, FIRST(C)->{ }, FIRST(S)->{ }, ]
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ #, b, }, FIRST(C)->{ }, FIRST(S)->{ }, ]
+processing:- c in <c> :: terminal => FIRST(c) u FIRST(c)
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ #, b, }, FIRST(C)->{ c, }, FIRST(S)->{ }, ]
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ #, b, }, FIRST(C)->{ #, c, }, FIRST(S)->{ }, ]
+
+<===========================>running passes<===========================>
+processing:- A in <ABC> :: non-terminal => {FIRST(A)\{ε}} u FIRST(ABC)
+ε ∈ FIRST(A) => continue to next symbol in α
+processing:- B in <ABC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(ABC)
+ε ∈ FIRST(B) => continue to next symbol in α
+processing:- C in <ABC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(ABC)
+ε ∈ FIRST(C) => continue to next symbol in α
+<ABC> =>* ε, add ε to FIRST(ABC)
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ #, b, }, FIRST(C)->{ #, c, }, FIRST(S)->{ #, a, b, c, }, ]
+processing:- a in <a> :: terminal => FIRST(a) u FIRST(a)
+processing:- b in <b> :: terminal => FIRST(b) u FIRST(b)
+processing:- c in <c> :: terminal => FIRST(c) u FIRST(c)
+
+<===========================>running passes<===========================>
+processing:- A in <ABC> :: non-terminal => {FIRST(A)\{ε}} u FIRST(ABC)
+ε ∈ FIRST(A) => continue to next symbol in α
+processing:- B in <ABC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(ABC)
+ε ∈ FIRST(B) => continue to next symbol in α
+processing:- C in <ABC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(ABC)
+ε ∈ FIRST(C) => continue to next symbol in α
+<ABC> =>* ε, add ε to FIRST(ABC)
+processing:- a in <a> :: terminal => FIRST(a) u FIRST(a)
+processing:- b in <b> :: terminal => FIRST(b) u FIRST(b)
+processing:- c in <c> :: terminal => FIRST(c) u FIRST(c)
+:::first set:: [ FIRST(A)->{ #, a, }, FIRST(B)->{ #, b, }, FIRST(C)->{ #, c, }, FIRST(S)->{ #, a, b, c, }, ]
+
+<===################# First calculation done #################=>
+
+
+:::Initial follow set:: [ FOLLOW(A)->{ }, FOLLOW(B)->{ }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, }, ]
+
+<===========================>running passes<===========================>
+Seperation of production:: S -> ABC where, NT:-A and ß:-BC
+processing:- B in <BC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BC)
+ε ∈ FIRST(B) => continue to next symbol in α
+processing:- C in <BC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BC)
+ε ∈ FIRST(C) => continue to next symbol in α
+<BC> =>* ε, add ε to FIRST(BC)
+>>>>>finding FIRST of ß:: FIRST(BC) = { #, b, c, }
+production S->αAß => FOLLOW(A)=FIRST(BC)\{ε}
+:::follow set:: [ FOLLOW(A)->{ b, c, }, FOLLOW(B)->{ }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, }, ]
+production S->αA or S->αAß and ε ∈ FIRST(BC) => FOLLOW(A)=FOLLOW(S)
+:::follow set:: [ FOLLOW(A)->{ $, b, c, }, FOLLOW(B)->{ }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, }, ]
+Seperation of production:: S -> ABC where, NT:-B and ß:-C
+processing:- C in <C> :: non-terminal => {FIRST(C)\{ε}} u FIRST(C)
+ε ∈ FIRST(C) => continue to next symbol in α
+<C> =>* ε, add ε to FIRST(C)
+>>>>>finding FIRST of ß:: FIRST(C) = { #, c, }
+production S->αBß => FOLLOW(B)=FIRST(C)\{ε}
+:::follow set:: [ FOLLOW(A)->{ $, b, c, }, FOLLOW(B)->{ c, }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, }, ]
+production S->αB or S->αBß and ε ∈ FIRST(C) => FOLLOW(B)=FOLLOW(S)
+:::follow set:: [ FOLLOW(A)->{ $, b, c, }, FOLLOW(B)->{ $, c, }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, }, ]
+
+<===========================>running passes<===========================>
+Seperation of production:: S -> ABC where, NT:-A and ß:-BC
+processing:- B in <BC> :: non-terminal => {FIRST(B)\{ε}} u FIRST(BC)
+ε ∈ FIRST(B) => continue to next symbol in α
+processing:- C in <BC> :: non-terminal => {FIRST(C)\{ε}} u FIRST(BC)
+ε ∈ FIRST(C) => continue to next symbol in α
+<BC> =>* ε, add ε to FIRST(BC)
+>>>>>finding FIRST of ß:: FIRST(BC) = { #, b, c, }
+production S->αAß => FOLLOW(A)=FIRST(BC)\{ε}
+production S->αA or S->αAß and ε ∈ FIRST(BC) => FOLLOW(A)=FOLLOW(S)
+Seperation of production:: S -> ABC where, NT:-B and ß:-C
+processing:- C in <C> :: non-terminal => {FIRST(C)\{ε}} u FIRST(C)
+ε ∈ FIRST(C) => continue to next symbol in α
+<C> =>* ε, add ε to FIRST(C)
+>>>>>finding FIRST of ß:: FIRST(C) = { #, c, }
+production S->αBß => FOLLOW(B)=FIRST(C)\{ε}
+production S->αB or S->αBß and ε ∈ FIRST(C) => FOLLOW(B)=FOLLOW(S)
+:::follow set:: [ FOLLOW(A)->{ $, b, c, }, FOLLOW(B)->{ $, c, }, FOLLOW(C)->{ }, FOLLOW(S)->{ $, }, ]
+
+
+<===################# Follow calculation done #################=>
+
