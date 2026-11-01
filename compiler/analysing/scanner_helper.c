@@ -87,7 +87,7 @@ void skip_whitespace_and_comments(Scanner *scanner)
         }
         else if (c == '/' && peek_next_char(scanner) == '*')
         {
-            // Skip multi-line block comment
+            // Skip multi-line block comment, handling unclosed comments gracefully
             advance_char(scanner); // consume '/'
             advance_char(scanner); // consume '*'
             while (!is_at_end_position(scanner))

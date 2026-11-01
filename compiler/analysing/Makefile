@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -std=c99 -O2
 
 SRCS = file_open_buffer.c string_char_processing.c scanner_helper.c tokenize.c analysis.c main.c
 OBJS = $(SRCS:.c=.o)
-TARGET = analyzer
+TARGET = a.out
 
 all: $(TARGET)
 
