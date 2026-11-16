@@ -1,0 +1,27 @@
+CC = gcc
+
+midpoint_circle: midpoint_circle.c
+	$(CC) midpoint_circle.c -o midpoint_circle
+
+bresenham_circle: bresenham_circle.c
+	$(CC) bresenham_circle.c -o bresenham_circle
+
+midpoint_ellipse: elispedraw.c
+	$(CC) elispedraw.c -o elispedraw
+
+store_output: midpoint_circle, bresenham_circle, elispedraw
+	./bresenham_circle > bres_cir
+	./midpoint_circle > mid_cir
+	./elispedraw > mid_elisp
+	
+compare_circle: midpoint_circle, bresenham_circle
+	diff bres_cir mid_cir > circle_compare
+
+convert_pdf:
+	pandoc report.md -o report.pdf --from=markdown -V geometry:margin=1in --pdf-engine=xelatex
+
+convert_docx:
+	pandoc report.md -o report.docx --from=markdown -V geometry:margin=1in
+
+clean:
+	rm -f bres_cir mid_cir circle_compare
