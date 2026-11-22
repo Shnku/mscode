@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.15"
+# requires-python = ">=3.14"
 # dependencies = [
 #     "marimo>=0.23.3",
 #     "matplotlib>=3.11.2",
@@ -9,7 +9,7 @@
 
 import marimo
 
-__generated_with = "0.25.1"
+__generated_with = "0.25.2"
 app = marimo.App()
 
 
@@ -38,7 +38,7 @@ def _():
             self.y = y
 
         def __repr__(self):
-            return f"({self.x},{self.y})"
+            return f"({self.x:g},{self.y:g})"
 
 
     class Line:
@@ -70,48 +70,31 @@ def _():
         def __repr__(self):
             return f"ViewWindow (Xmin={self.Xmin}, Ymin={self.Ymin}, Xmax={self.Xmax}, Ymax={self.Ymax})"
 
-
     return Line, Point, Polygon, ViewWindow, WindowEdges
 
 
 @app.cell
 def _(Polygon, ViewWindow, plt):
-    def draw_polygon(pol: Polygon, window: ViewWindow):
-        plt.plot(
-            [i.x for i in pol.vertices] + [pol.vertices[0].x],
-            [i.y for i in pol.vertices] + [pol.vertices[0].y],
-            "-o",
-        )
-        plt.fill(
+    def draw_polygon(pol: Polygon, window: ViewWindow, ax=None, title=""):
+        if ax is None:
+            ax = plt.gca()
+
+        ax.fill(
             [window.Xmin, window.Xmin, window.Xmax, window.Xmax, window.Xmin],
             [window.Ymin, window.Ymax, window.Ymax, window.Ymin, window.Ymin],
             color="orange",
             alpha=0.3,
         )
-        plt.show()
 
+        if pol.vertices:
+            xs = [p.x for p in pol.vertices] + [pol.vertices[0].x]
+            ys = [p.y for p in pol.vertices] + [pol.vertices[0].y]
+            ax.plot(xs, ys, "-o")
+
+        ax.set_aspect("equal", adjustable="box")
+        ax.set_title(title)
 
     return (draw_polygon,)
-
-
-@app.cell
-def _(draw_polygon, pol, view):
-    draw_polygon(pol, view)
-    return
-
-
-@app.cell
-def _(Point, Polygon):
-    pol = Polygon([Point(100, 20), Point(190, 140), Point(30, 140)])
-    pol
-    return (pol,)
-
-
-@app.cell
-def _(ViewWindow):
-    view = ViewWindow((50, 50), (200, 150))
-    view
-    return (view,)
 
 
 @app.cell
@@ -123,15 +106,14 @@ def _():
     #   vertices =[v1,v2,v3],
     #   edges =[(v1,v2),(v2,v3),(v3,v1)]  # the form of closed polygon..
     # }
-
     return
 
 
 @app.cell
-def _(Line, Point, ViewWindow, WindowEdges):
+def _(Line, Point, Polygon, ViewWindow, WindowEdges):
     def get_region_code(point: Point, window: ViewWindow):
         # T B R L format
-        code = 0b0000  # inside
+        code = 0b0000  # is_inside
         # top
         if point.y > window.Ymax:
             code |= WindowEdges.TOP
@@ -154,105 +136,126 @@ def _(Line, Point, ViewWindow, WindowEdges):
         if edgecode == WindowEdges.LEFT:
             if dx == 0:
                 return None
-            t = (viewindow.Xmin - edge.start.x) / dx
-            return Point(viewindow.Xmin, edge.start.y + t * dy)
+            x = viewindow.Xmin
+            y = edge.start.y + (viewindow.Xmin - edge.start.x) * (dy / dx)
 
         if edgecode == WindowEdges.RIGHT:
             if dx == 0:
                 return None
-            t = (viewindow.Xmax - edge.start.x) / dx
-            return Point(viewindow.Xmax, edge.start.y + t * dy)
+            x = viewindow.Xmax
+            y = edge.start.y + (viewindow.Xmax - edge.start.x) * (dy / dx)
 
         if edgecode == WindowEdges.BOTTOM:
             if dy == 0:
                 return None
-            t = (viewindow.Ymin - edge.start.y) / dy
-            return Point(edge.start.x + t * dx, viewindow.Ymin)
+            x = edge.start.x + (viewindow.Ymin - edge.start.y) / dy * dx
+            y = viewindow.Ymin
 
         if edgecode == WindowEdges.TOP:
             if dy == 0:
                 return None
-            t = (viewindow.Ymax - edge.start.y) / dy
-            return Point(edge.start.x + t * dx, viewindow.Ymax)
+            x = edge.start.x + (viewindow.Ymax - edge.start.y) / dy * dx
+            y = viewindow.Ymax
+
+        return Point(x, y)
 
 
-    def clip_polygon(
-        vertices: list[Point], edgecode: int, viewindow: ViewWindow
-    ) -> list[Point]:
-        if not vertices:
-            return []
+    def clip_polygon_against_windowedge(
+        edges: list[Line], edgecode: int, viewindow: ViewWindow
+    ):
+        updated_vertices: list[Point] = []
 
-        updated_vertices = []
-
-        def inside(point: Point) -> bool:
+        def is_inside(point: Point):
             return (get_region_code(point, viewindow) & edgecode) == 0
 
-        previous = vertices[-1]
-        previous_inside = inside(previous)
-
-        for current in vertices:
-            current_inside = inside(current)
-
-            if current_inside:
-                if not previous_inside:
-                    intersection_point = intersection(
-                        Line(previous, current), edgecode, viewindow
-                    )
+        for edge in edges:
+            # start outside but end inside
+            if is_inside(edge.end):
+                if not is_inside(edge.start):
+                    intersection_point = intersection(edge, edgecode, viewindow)
                     if intersection_point is not None:
                         updated_vertices.append(intersection_point)
 
-                updated_vertices.append(current)
+                updated_vertices.append(edge.end)
 
-            elif previous_inside:
-                intersection_point = intersection(
-                    Line(previous, current), edgecode, viewindow
-                )
+            # start inside end outside
+            elif is_inside(edge.start):
+                intersection_point = intersection(edge, edgecode, viewindow)
                 if intersection_point is not None:
                     updated_vertices.append(intersection_point)
 
-            previous = current
-            previous_inside = current_inside
+            # else no change to vertices
 
-        return updated_vertices
+        return Polygon(updated_vertices)
 
-
-    return (clip_polygon,)
+    return (clip_polygon_against_windowedge,)
 
 
 @app.cell
-def _(WindowEdges, clip_polygon, pol, view):
-    new_vertices = clip_polygon(pol.vertices, WindowEdges.LEFT, view)
-    print(new_vertices)
-    return (new_vertices,)
+def _(Point, Polygon, ViewWindow, WindowEdges):
+    # clipping window
+    window = ViewWindow((50, 50), (200, 150))
+
+    # define points and run clipping
+    # roll 213 => a=1,b=3
+    a, b = 1, 3
+
+    polygons = {
+        "Q1": Polygon([Point(80, 70), Point(150, 70), Point(115, 130)]),
+        "Q2": Polygon([Point(20, 20), Point(250, 20), Point(135, 200)]),
+        "Q3": Polygon(
+            [
+                Point(140 + a, 20 + b),
+                Point(230 + a, 20 + b),
+                Point(230 + a, 110 + b),
+                Point(140 + a, 110 + b),
+            ]
+        ),
+    }
+
+    codes = [WindowEdges.LEFT, WindowEdges.RIGHT, WindowEdges.BOTTOM, WindowEdges.TOP]
+    return codes, polygons, window
 
 
 @app.cell
-def _(Polygon, draw_polygon, new_vertices, view):
-    draw_polygon(Polygon(new_vertices), view)
-    return
+def _(
+    clip_polygon_against_windowedge,
+    codes,
+    draw_polygon,
+    plt,
+    polygons,
+    window,
+):
+    figures = []
+    for polygon_id, original_polygon in polygons.items():
+        print(f"\n\nProcessing polygon {polygon_id}", flush=True)
+        stages = [("Original", original_polygon)]
+        clipped_polygon = original_polygon
+
+        for which_edge, edge_name in zip(codes, ["left", "right", "bottom", "top"]):
+            # PERFORM THE CLIPPING......
+            clipped_polygon = clip_polygon_against_windowedge(
+                clipped_polygon.edges, which_edge, window
+            )
+            print(f"After {edge_name} clipping:\n{clipped_polygon}", flush=True)
+            stages.append((f"After {edge_name} clipping", clipped_polygon))
+
+        fig, axes = plt.subplots(1, len(stages), figsize=(18, 4))
+
+        for ax, (title, stage_polygon) in zip(axes, stages):
+            draw_polygon(stage_polygon, window, ax=ax, title=title)
+
+        plt.axis("equal")
+        fig.tight_layout()
+        fig.savefig(f"Polygon{polygon_id}.png")
+        figures.append(fig)
+    # plt.show()
+    return (figures,)
 
 
 @app.cell
-def _(WindowEdges, clip_polygon, pol, view):
-    new_vertices1 = clip_polygon(pol.vertices, WindowEdges.BOTTOM, view)
-    print(new_vertices1)
-
-    return (new_vertices1,)
-
-
-@app.cell
-def _(Polygon, draw_polygon, new_vertices1, view):
-    draw_polygon(Polygon(new_vertices1), view)
-    return
-
-
-@app.cell
-def _():
-    return
-
-
-@app.cell
-def _():
+def _(figures):
+    figures
     return
 
 
